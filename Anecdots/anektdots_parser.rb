@@ -1,16 +1,21 @@
+require 'rubygems'
+require 'bundler/setup'
+
+require 'open-uri'
+Bundler.require(:default)
+
 require 'anekdot'
 require 'anekdots_access'
 
-require 'open-uri'
-require 'nokogiri'
 # function to parce anekdots by date
 def parse_by_date(date)
   url = "https://anekdot.ru/release/anekdot/day/#{date}/"
   html = open(url)
   doc = Nokogiri::HTML(html)
+  access = AnekdotAccess.new
   doc.css('.text').each do |elem|
     if elem.css('img').length == 0 then
-      insert(Anekdot.new elem.text, date)
+      access.insert(Anekdot.new elem.text, date)
     end
   end
 end
